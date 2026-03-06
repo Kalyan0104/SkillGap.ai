@@ -56,10 +56,13 @@ def get_text_chunks(text):
     return text_splitter.split_text(text)
 
 def create_vector_store(chunks):
-    """Creates an in-memory vector database using ChromaDB and ollama Embeddings."""
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-001",google_api_key=api_key)
+    # Explicitly passing API key and using latest stable model
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/text-embedding-004", 
+        google_api_key=os.getenv("GOOGLE_API_KEY")
+    )
     return Chroma.from_texts(texts=chunks, embedding=embeddings)
-
+    
 # PHASE 3: AI ANALYSIS ENGINE (RAG)
 def ask_ai_advice(resume_text, context_data):
     """Generates mentorship advice based on the resume and JD context."""
