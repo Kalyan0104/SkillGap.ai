@@ -108,7 +108,7 @@ with up_col1:
 with up_col2:
     st.subheader("📂 Step 2: Job Descriptions")
     #choice:pdf or text
-    jd_method = st.radio("How would you like to provide  JD ?", ("Paste Text","Upload PDF"),horizonatl=True)
+    jd_method = st.radio("How would you like to provide  JD ?", ("Paste Text","Upload PDF"),horizontal=True)
     
     final_jd_content=""
 
