@@ -66,7 +66,7 @@ def create_vector_store(chunks):
         # Chroma Vector DB create chestunnam
         vector_db = Chroma.from_texts(texts=chunks, embedding=embeddings)
         return vector_db
-    except Exception as e:
+   except Exception as e:
         # Error osthe redacted kakunda screen meede kanipistundi
         st.error(f"❌ Google AI Error: {str(e)}")
         return None
