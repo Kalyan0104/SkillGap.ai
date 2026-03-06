@@ -53,7 +53,8 @@ def get_pdf_text(uploaded_file):
                 text += page_text
         return text
     except Exception as e:
-        return f"Error: reading PDF: {e}"
+        reply=(f"Error: reading PDF: {e}")
+        return reply
 
 # PHASE 2: AI ANALYSIS ENGINE (RAG)
 def ask_ai_advice(resume_text, context_data):
@@ -62,14 +63,14 @@ def ask_ai_advice(resume_text, context_data):
     try:
         """using Gemini 1.5 Flash for fast,accurate analysis."""
         model =genai.Generativemodel("gemini-1.5-flash",
-            generation_configuration={"temperature":0.7} 
+            generation_config={"temperature":0.7} 
         )    
         prompt = f"""
         You are a Senior Software Engineer and Mentor. 
         Analyze the student's resume against the Job Description (JD) context.
     
         JD CONTEXT: {context_data}
-        RESUME TEXT: {resume_text[:2000]}
+        RESUME TEXT: {resume_text[:3000]}
     
         STRICT INSTRUCTIONS:
         1. Identify exact missing skills from JD.
@@ -84,10 +85,10 @@ def ask_ai_advice(resume_text, context_data):
         1. **Short-term:** [Tool/Course]
         2. **Project Idea:** [Small Project]
         """
-        response=llm.invoke(prompt)
-        return  response.content
+        response=model.generate_content(prompt)
+        return  response.text
     except Exception as e:
-        st.error(f"LLM Error:{str(e)}")
+        st.error(f"AI Error:{str(e)}")
         return "AI Advice generation failed."
 
 
@@ -136,7 +137,7 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             # --- EXECUTION: PHASE 1 Extraction ---
             resume_content = get_pdf_text(resume_file)
             #----Execution:phase AI Analysis
-            advice = ask_ai_advice(resume_content, context)
+            advice = ask_ai_advice(resume_content, final_jd_content)
             #----Exceution:phase Simple Keyqord Metric
             skills_to_check = ["Python", "Django", "SQL", "Git", "Docker", "API", "Testing","Machine Learning","Kubernetes"]
             found_skills = [s for s in skills_to_check if s.lower() in resume_content.lower()]
