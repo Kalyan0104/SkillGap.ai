@@ -8,7 +8,7 @@ from langchain_community.vectorstores import Chroma
 
 load_dotenv()
 
-api_key=os.getenv("GOOGLE_API_KEY")
+api_key=st.secrets["GOOGLE_API_KEY"]
 # ==========================================
 # PHASE 4: UI CONFIGURATION & STYLING
 # ==========================================
@@ -57,12 +57,19 @@ def get_text_chunks(text):
 
 def create_vector_store(chunks):
     # Explicitly passing API key and using latest stable model
-    embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004", 
-        google_api_key=os.getenv("GOOGLE_API_KEY")
-    )
-    return Chroma.from_texts(texts=chunks, embedding=embeddings)
-    
+   try:
+        # Latest Google Embedding Model
+        embeddings = GoogleGenerativeAIEmbeddings(
+            model="models/text-embedding-004", 
+            google_api_key=api_key
+        )
+        # Chroma Vector DB create chestunnam
+        vector_db = Chroma.from_texts(texts=chunks, embedding=embeddings)
+        return vector_db
+    except Exception as e:
+        # Error osthe redacted kakunda screen meede kanipistundi
+        st.error(f"❌ Google AI Error: {str(e)}")
+        return None
 # PHASE 3: AI ANALYSIS ENGINE (RAG)
 def ask_ai_advice(resume_text, context_data):
     """Generates mentorship advice based on the resume and JD context."""
