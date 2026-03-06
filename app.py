@@ -62,7 +62,7 @@ def ask_ai_advice(resume_text, context_data):
 
     try:
         """using Gemini 1.5 Flash for fast,accurate analysis."""
-        model =genai.Generativemodel("gemini-1.5-flash",
+        model =genai.GenerativeModel("gemini-1.5-flash",
             generation_config={"temperature":0.7} 
         )    
         prompt = f"""
