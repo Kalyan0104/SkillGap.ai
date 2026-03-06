@@ -2,17 +2,19 @@ import streamlit as st
 from pypdf import PdfReader
 import os
 from dotenv import load_dotenv #to handle local key
-from langchain_google_genai import GoogleGenerativeAI,GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings,ChatGoogleGenerativeAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 
+#load local environment variable(for local testing)
 load_dotenv()
 
-api_key=st.secrets["GOOGLE_API_KEY"]
+#Get API key from Streamlit Secrets(cloud)
+api_key = st.secrets["GOOGLE_API_KEY"]
 # ==========================================
 # PHASE 4: UI CONFIGURATION & STYLING
 # ==========================================
-st.set_page_config(page_title="SkillGap.ai v1.0",page_icon="🎯", layout="wide")
+st.set_page_config(page_title="SkillGap.ai v1.1",page_icon="🎯", layout="wide")
 
 #custom css for professional dashboard look
 st.markdown("""
@@ -62,7 +64,7 @@ def create_vector_store(chunks):
         # Some versions require the 'models/' prefix, some don't. 
         # We will use the most standard one.
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="text-embedding-004", 
+            model="models/text-embedding-004", 
             google_api_key=api_key,
             task_type="retrieval_document"
         )
@@ -101,7 +103,8 @@ def ask_ai_advice(resume_text, context_data):
         1. **Short-term:** [Tool/Course]
         2. **Project Idea:** [Small Project]
         """
-        return llm.invoke(prompt)
+        response=llm.invoke(prompt)
+        return  response.content
     except Exception as e:
         st.error(f"LLM Error:{str(e)}")
         return "Advice generation failed."
@@ -158,12 +161,12 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             match_p = int((len(found) / len(skills_to_check)) * 100)
             
             #Displaying Metrics
-            col1,col2,col3 = st.columns(3)
-            with col1:
+            m_col1,m_col2,m_col3 = st.columns(3)
+            with m_col1:
                 st.metric("Match Score", f"{match_p}%")
-            with col2:
+            with m_col2:
                 st.metric("Skills Found", len(found))
-            with col3:
+            with m_col3:
                 st.metric("Gaps Identified", len(skills_to_check) - len(found))
 
             st.progress(match_p / 100)
