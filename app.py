@@ -62,7 +62,7 @@ def create_vector_store(chunks):
         # Some versions require the 'models/' prefix, some don't. 
         # We will use the most standard one.
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-004", 
+            model="text-embedding-004", 
             google_api_key=api_key,
             task_type="retrieval_document"
         )
@@ -77,7 +77,7 @@ def create_vector_store(chunks):
 def ask_ai_advice(resume_text, context_data):
     try:
         """Generates mentorship advice based on the resume and JD context."""
-        llm =GoogleGenerativeAI(model="gemini-1.5-flash",
+        llm =ChatGoogleGenerativeAI(model="gemini-1.5-flash",
         google_api_key=api_key,
         temperature=0.7       
         )
@@ -174,7 +174,7 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             
             #FinalAnalysis Output.
             advice = ask_ai_advice(resume_content, context)
-            st.success("Analysis Done mowa!")
+            st.success("Analysis Done !")
             st.markdown("### 🌟 AI Mentor Advice")
             st.write(advice)
             
