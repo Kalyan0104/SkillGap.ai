@@ -57,7 +57,7 @@ def get_text_chunks(text):
 
 def create_vector_store(chunks):
     """Creates an in-memory vector database using ChromaDB and ollama Embeddings."""
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=api_key)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-001",google_api_key=api_key)
     return Chroma.from_texts(texts=chunks, embedding=embeddings)
 
 # PHASE 3: AI ANALYSIS ENGINE (RAG)
