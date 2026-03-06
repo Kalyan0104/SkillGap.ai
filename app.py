@@ -60,14 +60,14 @@ def create_vector_store(chunks):
    try:
         # Latest Google Embedding Model
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-001", 
+            model="models/embedding-001", 
             google_api_key=api_key
         )
-        # Chroma Vector DB create chestunnam
+        # Creating Vector DB
         vector_db = Chroma.from_texts(texts=chunks, embedding=embeddings)
         return vector_db
    except Exception as e:
-        # Error osthe redacted kakunda screen meede kanipistundi
+        # if Error occurs ,display on scree
         st.error(f"❌ Google AI Error: {str(e)}")
         return None
 # PHASE 3: AI ANALYSIS ENGINE (RAG)
@@ -133,10 +133,15 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             
             # --- EXECUTION:PHASE 3 ---
             # Retrieve relevant content using similarity search
+            #Initializing context as an empty string 
+            context =""
             if vector_db:
-                context = "\n".join([doc.page_content for doc in vector_db.similarity_search(resume_content, k=2)])
-            else:
-                st.warning("⚠️ Vector database create avvaledu. Please check the error above.")
+                try:
+                    #search for relevant chunks in the resume
+                    docs=vector_db.similarity_search(resume_content,k=2)
+                    context = "\n".join([doc.page_content for doc in docs])
+                except Exception as e:
+                    st.warning(f"⚠️ Vector search failed:{e}")
             #Metric calculation Logic 
             skills_to_check = ["Python", "Django", "SQL", "Git", "Docker", "API", "Testing","Machine Learning","Kubernetes"]
             found = [s for s in skills_to_check if s.lower() in resume_content.lower()]
