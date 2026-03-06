@@ -61,8 +61,8 @@ def ask_ai_advice(resume_text, context_data):
 
     try:
         """using Gemini 1.5 Flash for fast,accurate analysis."""
-        model =genai.GenerativeAI("gemini-1.5-flash",
-        generation_configuration={"temperature":"0.7"} 
+        model =genai.Generativemodel("gemini-1.5-flash",
+            generation_configuration={"temperature":0.7} 
         )    
         prompt = f"""
         You are a Senior Software Engineer and Mentor. 
@@ -108,7 +108,7 @@ with up_col1:
 with up_col2:
     st.subheader("📂 Step 2: Job Descriptions")
     #choice:pdf or text
-    jd_method = st.file_uploader("How would you like to provide  JD ?", ("Paste Text","Upload PDF"),horizonatl=True)
+    jd_method = st.radio("How would you like to provide  JD ?", ("Paste Text","Upload PDF"),horizonatl=True)
     
     final_jd_content=""
 
