@@ -131,7 +131,7 @@ st.markdown("---")
 # EXECUTION & OUTPUT
 # ==========================================
 if st.button("🚀 Analyze Skills & Generate Roadmap "):
-    if resume_file and jd_files:
+    if resume_file and final_jd_content:
         with st.spinner("Senior Mentor is reviewing your profile... Please wait...."):
             # --- EXECUTION: PHASE 1 Extraction ---
             resume_content = get_pdf_text(resume_file)
