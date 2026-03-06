@@ -58,10 +58,13 @@ def get_text_chunks(text):
 def create_vector_store(chunks):
     # Explicitly passing API key and using latest stable model
    try:
-        # Latest Google Embedding Model
+        # Using 'models/text-embedding-004' with explicit task_type
+        # Some versions require the 'models/' prefix, some don't. 
+        # We will use the most standard one.
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-001", 
-            google_api_key=api_key
+            model="models/embedding-004", 
+            google_api_key=api_key,
+            task_type="retrieval_document"
         )
         # Creating Vector DB
         vector_db = Chroma.from_texts(texts=chunks, embedding=embeddings)
@@ -72,29 +75,36 @@ def create_vector_store(chunks):
         return None
 # PHASE 3: AI ANALYSIS ENGINE (RAG)
 def ask_ai_advice(resume_text, context_data):
-    """Generates mentorship advice based on the resume and JD context."""
-    llm =GoogleGenerativeAI(model="gemini-1.5-flash",google_api_key=api_key)
-    prompt = f"""
-    You are a Senior Software Engineer and Mentor. 
-    Analyze the student's resume against the Job Description (JD) context.
+    try:
+        """Generates mentorship advice based on the resume and JD context."""
+        llm =GoogleGenerativeAI(model="gemini-1.5-flash",
+        google_api_key=api_key,
+        temperature=0.7       
+        )
+        prompt = f"""
+        You are a Senior Software Engineer and Mentor. 
+        Analyze the student's resume against the Job Description (JD) context.
     
-    JD CONTEXT: {context_data}
-    RESUME TEXT: {resume_text[:2000]}
+        JD CONTEXT: {context_data}
+        RESUME TEXT: {resume_text[:2000]}
     
-    STRICT INSTRUCTIONS:
-    1. Identify exact missing skills from JD.
-    2. Provide a 'Roadmap' style tip for the most critical missing skill.
-    3. Keep the tone professional and encouraging.
+        STRICT INSTRUCTIONS:
+        1. Identify exact missing skills from JD.
+        2. Provide a 'Roadmap' style tip for the most critical missing skill.
+        3. Keep the tone professional and encouraging.
 
-    FORMAT:
-    ### 🚩 Critical Skill Gaps
-    - [Skill Name]: Why it matters.
+        FORMAT:
+        ### 🚩 Critical Skill Gaps
+        - [Skill Name]: Why it matters.
 
-    ### 💡 Mentor's Action Plan
-    1. **Short-term:** [Tool/Course]
-    2. **Project Idea:** [Small Project]
-    """
-    return llm.invoke(prompt)
+        ### 💡 Mentor's Action Plan
+        1. **Short-term:** [Tool/Course]
+        2. **Project Idea:** [Small Project]
+        """
+        return llm.invoke(prompt)
+    except Exception as e:
+        st.error(f"LLM Error:{str(e)}")
+        return "Advice generation failed."
 
 
 # ==========================================
