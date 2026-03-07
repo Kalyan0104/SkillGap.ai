@@ -62,10 +62,10 @@ def ask_ai_advice(resume_text, context_data):
 
     try:
         """using Gemini 1.5 Flash for fast,accurate analysis."""
-        model =genai.GenerativeModel(
-           model = genai.GenerativeModel("gemini-2.5-flash"),
-            generation_config={"temperature":0.7} 
-        )    
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+            generation_config={"temperature": 0.7}
+            )
         prompt = f"""
         You are a Senior Software Engineer and Mentor. 
         Analyze the student's resume against the Job Description (JD) context.
@@ -168,4 +168,4 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
         st.warning("Please upload both Resume and at least one Job Description(JD).")
 
 st.markdown("---")
-st.caption("Powered by Gemini 1.5 Flash| Created by SKillGap.ai Team")
+st.caption("Powered by Gemini 2.5 Flash| Created by SKillGap.ai Team")
