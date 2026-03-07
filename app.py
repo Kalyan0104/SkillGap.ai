@@ -71,15 +71,16 @@ def ask_ai_advice(resume_text, context_data):
             generation_config={"temperature": 0.7}
             )
         prompt = f"""
-        You are a Senior Software Engineer and Mentor. 
-        Analyze the student's resume against the Job Description (JD) context.
+        You are a Senior Software Engineer and career Mentor. 
+        Analyze the candidate's resume against the Job Description (JD) context.
     
         JD CONTEXT: {clean_jd}
         RESUME TEXT: {clean_resume[:3000]}
     
         STRICT INSTRUCTIONS:
-        1. Identify exact missing skills from JD.
-        2. Provide a 'Roadmap' style tip for the most critical missing skill.
+        1. Identify the most important missing skills.
+        2.Explain why each skill matters for this role.
+        3. Provide a learning roadmap.
         3. Keep the tone professional and encouraging.
 
         FORMAT:
@@ -87,8 +88,8 @@ def ask_ai_advice(resume_text, context_data):
         - [Skill Name]: Why it matters.
 
         ### 💡 Mentor's Action Plan
-        1. **Short-term:** [Tool/Course]
-        2. **Project Idea:** [Small Project]
+        1. Short-term learning step
+        2. practical Project Idea
         """
         response=model.generate_content(prompt)
         return  response.text
@@ -96,7 +97,32 @@ def ask_ai_advice(resume_text, context_data):
         st.error(f"AI Error:{str(e)}")
         return "AI Advice generation failed."
 
+def extract_jd_skills(jd_text):
+    """Extract skills from JD using Gemini"""
+    try:
+        model=genai.generativeModel("gemini-2.5-flash")
 
+        prompt=f"""
+        Extract exactly 10-12 technical skills/tools from this Job Description.
+
+        return ONLY a comma separated list.
+
+        Example:
+        Python,AWS,Docker,React 
+        JD:
+        {jd_text[:2000]}
+        """
+        reponse=model.generate_content(prompt)
+
+        skills_list=[
+            s.strip()
+            for s in response.text.replace("\n","").split(",")
+            if s.strip()
+
+        ]
+        return skills_list
+    except:
+        return["Python","React","Node.js","SQL","AWS","Git"]
 # ==========================================
 # FRONTEND UI (Phase 4)
 # ==========================================
@@ -144,10 +170,13 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             #----Execution:phase AI Analysis
             advice = ask_ai_advice(resume_content, final_jd_content)
             #----Exceution:phase Simple Keyqord Metric
-            skills_to_check = ["Python","Django","Flask","FastAPI","SQL","PostgreSQL","MongoDB","Git","Docker","Kubernetes",
-            "AWS","API","Testing","Machine Learning","Deep Learning","CI/CD","Redis","Microservices"]
+            skills_to_check = extract_jd_skills(final_jd_content)
+            skills_to_check= list(set(skills_to_check))
             found_skills = [s for s in skills_to_check if s.lower() in resume_content.lower()]
-            match_p = int((len(found_skills) / len(skills_to_check)) * 100)
+            missing_skills = [s for s in skills_to_check is s not in found_skills]
+            found_skills.sort()
+            missing_skills.sort()
+            match_p = int((len(found_skills) / len(skills_to_check)) * 100) if skills_to_check else 0
             
             #Displaying Metrics
             m_col1,m_col2,m_col3 = st.columns(3)
@@ -156,12 +185,15 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             with m_col2:
                 st.metric("Skills Found", len(found_skills))
             with m_col3:
-                st.metric("Gaps Identified", len(skills_to_check) - len(found_skills))
+                st.metric("Gaps Identified", len(missing_skills))
 
             st.progress(match_p / 100)
             
             st.markdown("### ✅ Skills detected in your Resume:")
-            st.write(", ".join(found_skills)if found_skills else "No matching skills from the checklist detected.")
+            st.write(", ".join(found_skills)if found_skills else "No matching skills  detected.")
+
+            st.markdown("### ⚠ Missing Skills:")
+            st.write(", ".join(missing_skills)if missing_skills else "No skills are missing ")
             st.markdown("---")    
             
             #FinalAnalysis Output.
