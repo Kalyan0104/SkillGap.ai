@@ -173,7 +173,7 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             skills_to_check = extract_jd_skills(final_jd_content)
             skills_to_check= list(set(skills_to_check))
             found_skills = [s for s in skills_to_check if s.lower() in resume_content.lower()]
-            missing_skills = [s for s in skills_to_check is s not in found_skills]
+            missing_skills = [s for s in skills_to_check if s not in found_skills]
             found_skills.sort()
             missing_skills.sort()
             match_p = int((len(found_skills) / len(skills_to_check)) * 100) if skills_to_check else 0
