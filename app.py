@@ -61,6 +61,10 @@ def ask_ai_advice(resume_text, context_data):
     """communicates directly with gemini 2.5 Flash for career analysis."""
 
     try:
+        #force cleaning the strings to remove hidden surrogate characters.
+        #'ignore' error handler removes characters that cause the 'utf-8' codec error
+        clean_resume=str(resume_text).encode("utf-8","ignore").decode("utf-8")
+        clean_jd=str(context_data).encode("utf-8","ignore").decode("utf-8")
         """using Gemini 2.5 Flash for fast,accurate analysis."""
         model = genai.GenerativeModel(
             model_name="gemini-2.5-flash",
@@ -70,8 +74,8 @@ def ask_ai_advice(resume_text, context_data):
         You are a Senior Software Engineer and Mentor. 
         Analyze the student's resume against the Job Description (JD) context.
     
-        JD CONTEXT: {context_data}
-        RESUME TEXT: {resume_text[:3000]}
+        JD CONTEXT: {clean_jd}
+        RESUME TEXT: {clean_resume[:3000]}
     
         STRICT INSTRUCTIONS:
         1. Identify exact missing skills from JD.
