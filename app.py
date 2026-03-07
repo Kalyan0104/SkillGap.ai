@@ -58,10 +58,10 @@ def get_pdf_text(uploaded_file):
 
 # PHASE 2: AI ANALYSIS ENGINE (RAG)
 def ask_ai_advice(resume_text, context_data):
-    """communicates directly with gemin i1.5 Flash for career analysis."""
+    """communicates directly with gemini 2.5 Flash for career analysis."""
 
     try:
-        """using Gemini 1.5 Flash for fast,accurate analysis."""
+        """using Gemini 2.5 Flash for fast,accurate analysis."""
         model = genai.GenerativeModel(
             model_name="gemini-2.5-flash",
             generation_config={"temperature": 0.7}
@@ -140,18 +140,19 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             #----Execution:phase AI Analysis
             advice = ask_ai_advice(resume_content, final_jd_content)
             #----Exceution:phase Simple Keyqord Metric
-            skills_to_check = ["Python", "Django", "SQL", "Git", "Docker", "API", "Testing","Machine Learning","Kubernetes"]
+            skills_to_check = ["Python","Django","Flask","FastAPI","SQL","PostgreSQL","MongoDB","Git","Docker","Kubernetes",
+            "AWS","API","Testing","Machine Learning","Deep Learning","CI/CD","Redis","Microservices"]
             found_skills = [s for s in skills_to_check if s.lower() in resume_content.lower()]
             match_p = int((len(found_skills) / len(skills_to_check)) * 100)
             
             #Displaying Metrics
             m_col1,m_col2,m_col3 = st.columns(3)
             with m_col1:
-                st.metric("Match Score", f"{match_p}%")
+                st.metric("✅Match Score", f"{match_p}%")
             with m_col2:
-                st.metric("Skills Found", len(found_skills))
+                st.metric("✅Skills Found", len(found_skills))
             with m_col3:
-                st.metric("Gaps Identified", len(skills_to_check) - len(found_skills))
+                st.metric("⚠️Gaps Identified", len(skills_to_check) - len(found_skills))
 
             st.progress(match_p / 100)
             
@@ -160,8 +161,8 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             st.markdown("---")    
             
             #FinalAnalysis Output.
-            st.success("Analysis Done !")
-            st.markdown("### 🌟 AI Mentor Advice")
+            st.success("🌟 Analysis Done !")
+            st.markdown("### 🚀 AI Mentor Advice")
             st.write(advice)
             
     else:
