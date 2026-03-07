@@ -148,11 +148,11 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             #Displaying Metrics
             m_col1,m_col2,m_col3 = st.columns(3)
             with m_col1:
-                st.metric("✅Match Score", f"{match_p}%")
+                st.metric("Match Score", f"{match_p}%")
             with m_col2:
-                st.metric("✅Skills Found", len(found_skills))
+                st.metric("Skills Found", len(found_skills))
             with m_col3:
-                st.metric("⚠️Gaps Identified", len(skills_to_check) - len(found_skills))
+                st.metric("Gaps Identified", len(skills_to_check) - len(found_skills))
 
             st.progress(match_p / 100)
             
@@ -161,7 +161,7 @@ if st.button("🚀 Analyze Skills & Generate Roadmap "):
             st.markdown("---")    
             
             #FinalAnalysis Output.
-            st.success("🌟 Analysis Done !")
+            st.success(" Analysis Done !")
             st.markdown("### 🚀 AI Mentor Advice")
             st.write(advice)
             
