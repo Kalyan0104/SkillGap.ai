@@ -10,6 +10,8 @@ An AI-Integrated Python application that analyzes the gap between a candidate's 
 
 🔗 **[Live Demo](https://skillgap-ai.streamlit.app/)**
 
+**Note: If the app is sleeping, please click "Wake up" and wait for a few seconds.**
+
 ## **🌟Features**
 
 - **Dynamic Skill Extraction:** Automatically identifies 10-12 core technical skills from any JD using Gemini AI.
